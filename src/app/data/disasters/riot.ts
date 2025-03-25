@@ -19,6 +19,7 @@ const riotEvents: DisasterEvent[] = [
     affectedAreas: [
       { lat: -6.2088, lng: 106.8456, name: "Jakarta City Center" },
     ],
+    sensors: [], // ✅ Added empty array to satisfy type requirement
   },
   {
     id: 2,
@@ -36,6 +37,7 @@ const riotEvents: DisasterEvent[] = [
     source: "Manual",
     reportedBy: "Government",
     affectedAreas: [{ lat: -6.9175, lng: 107.6191, name: "Bandung City Hall" }],
+    sensors: [], // ✅ Added empty array
   },
   {
     id: 403,
@@ -56,6 +58,7 @@ const riotEvents: DisasterEvent[] = [
     affectedAreas: [
       { lat: -6.2088, lng: 106.8456, name: "Jakarta, Indonesia" },
     ],
+    sensors: [], // ✅ Added empty array
   },
 ];
 

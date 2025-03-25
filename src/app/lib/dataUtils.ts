@@ -1,11 +1,11 @@
 import { SensorData } from "@/app/types/dashboard";
 
-// 📌 Function to filter sensors by risk level
-export function filterSensorsByRisk(
+// 📌 Function to filter sensors by severity level
+export function filterSensorsByseverity(
   sensors: SensorData[],
-  riskLevel: "Low" | "Medium" | "High"
+  severityLevel: "Low" | "Medium" | "High"
 ) {
-  return sensors.filter((sensor) => sensor.risk === riskLevel);
+  return sensors.filter((sensor) => sensor.severity === severityLevel);
 }
 
 // 📌 Function to filter sensors by type (Flood, Tsunami, Earthquake, etc.)

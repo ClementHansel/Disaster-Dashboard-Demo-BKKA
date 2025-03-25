@@ -11,4 +11,3 @@ export * from "./infrastructureCollapse";
 export * from "./militaryEmergency";
 export * from "./pandemicOutbreak";
 export * from "./riot";
-export * from "./manualEvents";

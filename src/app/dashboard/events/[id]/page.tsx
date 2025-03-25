@@ -1,80 +1,95 @@
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  DisasterEvent,
+  DisasterCategory,
+  Severity,
+  Sensor,
+} from "@/app/types/dashboard";
+import mockEvents from "@/app/data/mockEvents"; // Ensure mockEvents aligns with DisasterEvent type
 
-import mockEvents from "@/app/data/mockEvents";
-import EventOverview from "@/app/components/events/EventOverview";
-import ResponseActions from "@/app/components/events/ResponseActions";
-import SensorDataComponent from "@/app/components/events/SensorData";
-import EmergencyResources from "@/app/components/events/EmergencyResources";
-import { DisasterEvent, SensorData } from "@/app/types/dashboard";
-
-export default function EventDetailsPage() {
-  const params = useParams();
-  const id = params?.id;
-
-  // Convert id to number safely
-  const eventId = typeof id === "string" ? parseInt(id, 10) : NaN;
-
+const EventDetailsPage = ({ params }: { params: { eventId: string } }) => {
+  const eventId = parseInt(params.eventId, 10);
   const [eventData, setEventData] = useState<DisasterEvent | null>(null);
 
   useEffect(() => {
     if (!isNaN(eventId)) {
-      const event = mockEvents.find((e) => e.id === eventId) || null;
-      setEventData(event);
+      const event = mockEvents.find((e) => e.id === eventId);
+
+      if (event) {
+        const mappedEvent: DisasterEvent = {
+          id: event.id,
+          name: event.name,
+          description: event.description || "No description available.",
+          disasterCategory: (event.type as DisasterCategory) || "All", // Ensure valid DisasterCategory
+          severity: (event.severity as Severity) || "Low", // Ensure valid Severity
+          timestamp: event.timestamp,
+          status: (["Active", "Resolved", "Pending"].includes(event.status)
+            ? event.status
+            : "Active") as "Active" | "Resolved" | "Pending",
+          location:
+            typeof event.location === "string"
+              ? { lat: 0, lng: 0, name: event.location } // Fallback for string locations
+              : event.location,
+          source:
+            event.sensors && event.sensors.length > 0 ? "Sensor" : "Manual", // Assign based on sensors
+          sensors: event.sensors || [], // Ensure it's always an array
+        };
+
+        setEventData(mappedEvent);
+      } else {
+        setEventData(null);
+      }
     }
   }, [eventId]);
 
   if (!eventData) {
-    return (
-      <p className="text-center text-gray-500">Loading event details...</p>
-    );
+    return <div className="p-4">Event not found.</div>;
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">Disaster Event Details</h1>
-      <EventOverview event={eventData} />
-      <ResponseActions event={eventData} />
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">{eventData.name}</h1>
+      <p className="text-gray-600">{eventData.description}</p>
 
-      {/* Ensure mapped `sensors` include all required properties */}
-      <SensorDataComponent
-        sensors={(eventData.sensors || []).map(
-          (sensor): SensorData => ({
-            id: sensor.id,
-            name: sensor.name || "Unknown Sensor",
-            category: sensor.category,
-            disasterCategory: sensor.disasterCategory,
-            unit: sensor.unit || "N/A",
-            value: sensor.value ?? 0,
-            lat: sensor.lat ?? 0,
-            lng: sensor.lng ?? 0,
-            type: sensor.disasterCategory,
-            severity: sensor.severity,
-            status: (["Active", "Inactive", "Maintenance"].includes(
-              sensor.status
-            )
-              ? sensor.status
-              : "Active") as "Active" | "Inactive" | "Maintenance",
-            lastUpdated: sensor.lastUpdated || new Date().toISOString(),
-            batteryLevel: sensor.batteryLevel ?? undefined,
-            location: sensor.location ?? undefined,
-            history: Array.isArray(sensor.history) ? sensor.history : [],
-            eventId: sensor.eventId ?? undefined,
+      <div className="mt-4">
+        <p>
+          <strong>Category:</strong> {eventData.disasterCategory}
+        </p>
+        <p>
+          <strong>Severity:</strong> {eventData.severity}
+        </p>
+        <p>
+          <strong>Status:</strong> {eventData.status}
+        </p>
+        <p>
+          <strong>Timestamp:</strong>{" "}
+          {new Date(eventData.timestamp).toLocaleString()}
+        </p>
+        <p>
+          <strong>Source:</strong> {eventData.source}
+        </p>
+        <p>
+          <strong>Location:</strong> {eventData.location.name} (
+          {eventData.location.lat}, {eventData.location.lng})
+        </p>
+      </div>
 
-            // Disaster-specific properties (optional)
-            waterLevel: sensor.waterLevel ?? undefined,
-            moistureLevel: sensor.moistureLevel ?? undefined,
-            magnitude: sensor.magnitude ?? undefined,
-            temperature: sensor.temperature ?? undefined,
-            windSpeed: sensor.windSpeed ?? undefined,
-            capacity: sensor.capacity ?? undefined,
-          })
-        )}
-      />
-
-      <EmergencyResources event={eventData} />
+      {eventData.sensors.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold">Associated Sensors</h2>
+          <ul className="list-disc list-inside">
+            {eventData.sensors.map((sensor: Sensor) => (
+              <li key={sensor.id}>
+                {sensor.name} - {sensor.category} ({sensor.value} {sensor.unit})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default EventDetailsPage;

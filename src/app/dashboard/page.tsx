@@ -14,7 +14,6 @@ import type {
   DisasterEvent,
   SensorData,
   SensorCategory,
-  Severity,
   Status,
 } from "@/app/types/dashboard";
 
@@ -34,6 +33,7 @@ import {
 
 import militaryEmergencyData from "@/app/data/disasters/militaryEmergency";
 import riotEvents from "@/app/data/disasters/riot";
+import { volcanicEruptionSensors } from "../data/disasters/volcanicEruption";
 
 // List of disaster categories (for filtering)
 const disasterTypes: DisasterCategory[] = [
@@ -55,7 +55,7 @@ const disasterTypes: DisasterCategory[] = [
 ];
 
 // Gather real sensor data from various sources
-const allSensors: Record<DisasterCategory, SensorData[]> = {
+const allSensors: Record<DisasterCategory, (DisasterEvent | SensorData)[]> = {
   Flood: floodSensors,
   Earthquake: earthquakeSensors,
   Tsunami: tsunamiSensors,
@@ -69,7 +69,7 @@ const allSensors: Record<DisasterCategory, SensorData[]> = {
   "Military Emergency": militaryEmergencyData,
   "Pandemic & Outbreak": pandemicOutbreakEvents,
   Riot: riotEvents,
-  "Volcanic Eruption": [],
+  "Volcanic Eruption": volcanicEruptionSensors, // Placeholder, add actual data if available
   All: [
     ...floodSensors,
     ...earthquakeSensors,
@@ -109,7 +109,9 @@ function mapDisasterEventsToSensorData(
       id: event.id,
       name: event.name || "Detected Event",
       // Use related sensor’s category if found; otherwise, default to "Other" (make sure "Other" is valid in SensorCategory)
-      category: (relatedSensor?.category || "Other") as SensorCategory,
+      category: (relatedSensor?.category ||
+        event.disasterCategory ||
+        "Other") as SensorCategory,
       disasterCategory: event.disasterCategory,
       unit: relatedSensor?.unit || "N/A",
       value: relatedSensor?.value || 0,
@@ -143,13 +145,19 @@ export default function DashboardPage() {
   const [alerts] = useState<Alert[]>([]);
   // Disaster events would typically be loaded from an API.
   // For this example, we assume an empty array.
-  const [disasterEvents] = useState<DisasterEvent[]>([]);
+  const [disasterEvents] = useState<DisasterEvent[]>([
+    ...riotEvents,
+    ...militaryEmergencyData,
+    ...pandemicOutbreakEvents,
+  ]);
 
   // Filter real sensor data based on the active disaster category
   const filteredSensors: SensorData[] =
     activeDisaster === "All"
-      ? allSensors.All
-      : allSensors[activeDisaster] || [];
+      ? allSensors.All.filter((item): item is SensorData => "category" in item)
+      : allSensors[activeDisaster].filter(
+          (item): item is SensorData => "category" in item
+        ) || [];
 
   // Filter disaster events based on active disaster category
   const filteredEvents: DisasterEvent[] =

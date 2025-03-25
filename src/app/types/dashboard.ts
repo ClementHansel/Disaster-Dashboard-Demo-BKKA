@@ -44,7 +44,7 @@ export type SensorCategory =
   | "Geotechnical"
   | "Other";
 
-// 📌 Defines sensor data structure
+// 📌 Defines sensor data structure (real-time sensor reading)
 export type SensorData = {
   id: number;
   name: string;
@@ -54,16 +54,17 @@ export type SensorData = {
   value: number;
   lat: number;
   lng: number;
-  type: DisasterCategory;
+  type: DisasterCategory; // Use disaster category as type for display purposes
   severity: Severity;
-  status: Extract<Status, "Active" | "Inactive" | "Maintenance">; // Sensors don’t use "Resolved" or "Pending"
+  // For sensors, we allow only these statuses (Resolved/Pending are not used)
+  status: Extract<Status, "Active" | "Inactive" | "Maintenance">;
   lastUpdated: string;
   batteryLevel?: number;
   location?: string;
   history: { timestamp: string; value: number }[];
-  eventId?: number; // Event this sensor is associated with
+  eventId?: number; // if sensor is linked to an event
 
-  // ✅ Disaster-specific sensor properties (optional)
+  // Optional sensor-specific properties
   waterLevel?: number;
   moistureLevel?: number;
   magnitude?: number;
@@ -72,7 +73,7 @@ export type SensorData = {
   capacity?: number;
 };
 
-// 📌 Extends SensorData for easier reference
+// For convenience we alias SensorData as Sensor
 export type Sensor = SensorData;
 
 // 📌 Defines system alerts
@@ -81,7 +82,7 @@ export type Alert = {
   sensorId?: number;
   type: DisasterCategory;
   message: string;
-  severity: Extract<Severity, "Low" | "Moderate" | "High" | "Critical">; // Alerts start from "Moderate"
+  severity: Extract<Severity, "Low" | "Moderate" | "High" | "Critical">;
   timestamp: string;
 };
 
@@ -101,24 +102,20 @@ export type DisasterEvent = {
   disasterCategory: DisasterCategory;
   description?: string;
   severity: Severity;
-  status: Extract<Status, "Active" | "Resolved" | "Pending">; // Events don’t use "Maintenance"
+  // For events, status is one of these (not "Maintenance")
+  status: Extract<Status, "Active" | "Resolved" | "Pending">;
   timestamp: string;
   location: { lat: number; lng: number; name: string };
   source: "Sensor" | "Manual";
+  sensors: SensorData[]; // Associated sensor readings (may be empty)
 
-  // ✅ Sensors associated with the event
-  sensors: SensorData[];
-
-  // ✅ Manual event properties
+  // Additional manual event properties
   reportedBy?:
     | "Government"
     | "Military"
     | "Ministry of Health"
     | "Public Report";
   affectedAreas?: { lat: number; lng: number; name: string }[];
-
-  // ✅ Related alerts for the disaster event (optional)
-  relatedAlerts?: Alert[];
 };
 
 // 📌 Defines the main dashboard state structure
@@ -149,3 +146,16 @@ export type DashboardActions = {
 
 // 📌 Defines the complete dashboard context (state + actions)
 export type DashboardContextType = DashboardState & DashboardActions;
+
+export interface EventType {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  severity: string;
+  timestamp: string;
+  date: string;
+  location: string;
+  status: string;
+  sensors: Sensor[]; // ✅ Ensure sensors are correctly typed
+}

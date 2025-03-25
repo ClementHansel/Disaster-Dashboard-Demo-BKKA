@@ -12,6 +12,7 @@ export const pandemicOutbreakEvents: DisasterEvent[] = [
     location: { lat: -6.2, lng: 106.816, name: "Jakarta" },
     source: "Manual",
     reportedBy: "Ministry of Health",
+    sensors: [],
     affectedAreas: [
       { lat: -6.2, lng: 106.816, name: "Jakarta" },
       { lat: -7.25, lng: 112.75, name: "Surabaya" },
@@ -29,6 +30,7 @@ export const pandemicOutbreakEvents: DisasterEvent[] = [
     location: { lat: -6.914, lng: 107.609, name: "Bandung" },
     source: "Manual",
     reportedBy: "Public Report",
+    sensors: [],
     affectedAreas: [
       { lat: -6.914, lng: 107.609, name: "Bandung" },
       { lat: -0.789, lng: 113.921, name: "Central Kalimantan" },
@@ -49,6 +51,7 @@ export const pandemicOutbreakEvents: DisasterEvent[] = [
     },
     source: "Manual",
     reportedBy: "Ministry of Health",
+    sensors: [],
     affectedAreas: [
       { lat: -6.9147, lng: 107.6098, name: "Bandung, Indonesia" },
     ],

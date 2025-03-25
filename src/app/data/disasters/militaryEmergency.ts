@@ -12,6 +12,7 @@ const militaryEmergencyData: DisasterEvent[] = [
     location: { lat: -6.2, lng: 106.816, name: "Northern Border" },
     source: "Manual",
     reportedBy: "Military",
+    sensors: [],
     affectedAreas: [
       { lat: -6.2, lng: 106.816, name: "Northern Border" },
       { lat: -6.3, lng: 106.9, name: "Nearby Military Base" },
@@ -32,6 +33,7 @@ const militaryEmergencyData: DisasterEvent[] = [
     },
     source: "Manual",
     reportedBy: "Government",
+    sensors: [],
     affectedAreas: [
       { lat: -6.5, lng: 107.0, name: "Restricted Airspace Zone" },
     ],
@@ -51,6 +53,7 @@ const militaryEmergencyData: DisasterEvent[] = [
     },
     source: "Manual",
     reportedBy: "Military",
+    sensors: [],
     affectedAreas: [{ lat: -5.8, lng: 105.3, name: "Western Coastal Waters" }],
   },
   {
@@ -68,6 +71,7 @@ const militaryEmergencyData: DisasterEvent[] = [
     },
     source: "Manual",
     reportedBy: "Military",
+    sensors: [],
     affectedAreas: [
       { lat: -6.2001, lng: 106.8453, name: "Jakarta, Indonesia" },
       { lat: -7.7975, lng: 110.3705, name: "Yogyakarta, Indonesia" },

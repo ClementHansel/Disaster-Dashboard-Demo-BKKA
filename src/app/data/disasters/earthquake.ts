@@ -10,8 +10,9 @@ export const earthquakeSensors: SensorData[] = [
     value: 5.2, // ✅ Added required `value`
     lat: -6.2146,
     lng: 106.8451,
-    disasterType: "Earthquake",
-    risk: "Medium",
+    disasterCategory: "Earthquake",
+    type: "Earthquake",
+    severity: "Moderate",
     status: "Active",
     batteryLevel: 85,
     location: "Jakarta, Indonesia",
@@ -26,8 +27,9 @@ export const earthquakeSensors: SensorData[] = [
     value: 6.1, // ✅ Added required `value`
     lat: -7.2504,
     lng: 112.7688,
-    disasterType: "Earthquake",
-    risk: "High",
+    disasterCategory: "Earthquake",
+    type: "Earthquake",
+    severity: "High",
     status: "Active",
     batteryLevel: 78,
     location: "Surabaya, Indonesia",
