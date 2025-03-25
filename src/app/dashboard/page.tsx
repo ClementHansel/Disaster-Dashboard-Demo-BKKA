@@ -55,7 +55,7 @@ const disasterTypes: DisasterCategory[] = [
 ];
 
 // Gather real sensor data from various sources
-const allSensors: Record<DisasterCategory, SensorData[]> = {
+const allSensors: Record<DisasterCategory, (DisasterEvent | SensorData)[]> = {
   Flood: floodSensors,
   Earthquake: earthquakeSensors,
   Tsunami: tsunamiSensors,
@@ -148,8 +148,10 @@ export default function DashboardPage() {
   // Filter real sensor data based on the active disaster category
   const filteredSensors: SensorData[] =
     activeDisaster === "All"
-      ? allSensors.All
-      : allSensors[activeDisaster] || [];
+      ? allSensors.All.filter((item): item is SensorData => "category" in item)
+      : allSensors[activeDisaster].filter(
+          (item): item is SensorData => "category" in item
+        ) || [];
 
   // Filter disaster events based on active disaster category
   const filteredEvents: DisasterEvent[] =
