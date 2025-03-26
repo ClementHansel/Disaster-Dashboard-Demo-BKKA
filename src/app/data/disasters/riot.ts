@@ -9,6 +9,9 @@ const riotEvents: DisasterEvent[] = [
     severity: "Critical",
     status: "Active",
     timestamp: "2025-03-20T14:30:00Z",
+    date: "2025-03-20", // ✅ Added date field
+    type: "Riot", // ✅ Added type field
+    reportedAt: "2025-03-20T14:45:00Z", // ✅ Added reportedAt field
     location: {
       lat: -6.2088,
       lng: 106.8456,
@@ -19,7 +22,7 @@ const riotEvents: DisasterEvent[] = [
     affectedAreas: [
       { lat: -6.2088, lng: 106.8456, name: "Jakarta City Center" },
     ],
-    sensors: [], // ✅ Added empty array to satisfy type requirement
+    sensors: [],
   },
   {
     id: 2,
@@ -29,6 +32,9 @@ const riotEvents: DisasterEvent[] = [
     severity: "Moderate",
     status: "Pending",
     timestamp: "2025-03-19T10:15:00Z",
+    date: "2025-03-19",
+    type: "Riot",
+    reportedAt: "2025-03-19T10:30:00Z",
     location: {
       lat: -6.9175,
       lng: 107.6191,
@@ -37,7 +43,7 @@ const riotEvents: DisasterEvent[] = [
     source: "Manual",
     reportedBy: "Government",
     affectedAreas: [{ lat: -6.9175, lng: 107.6191, name: "Bandung City Hall" }],
-    sensors: [], // ✅ Added empty array
+    sensors: [],
   },
   {
     id: 403,
@@ -48,6 +54,9 @@ const riotEvents: DisasterEvent[] = [
     severity: "Critical",
     status: "Active",
     timestamp: "2025-03-20T15:45:00Z",
+    date: "2025-03-20",
+    type: "Riot",
+    reportedAt: "2025-03-20T16:00:00Z",
     location: {
       lat: -6.2088,
       lng: 106.8456,
@@ -58,7 +67,7 @@ const riotEvents: DisasterEvent[] = [
     affectedAreas: [
       { lat: -6.2088, lng: 106.8456, name: "Jakarta, Indonesia" },
     ],
-    sensors: [], // ✅ Added empty array
+    sensors: [],
   },
 ];
 

@@ -100,11 +100,14 @@ export type DisasterEvent = {
   id: number;
   name: string;
   disasterCategory: DisasterCategory;
-  description?: string;
+  description: string;
   severity: Severity;
+  date: string; // Fix: Add missing property
+  type: DisasterCategory; // Fix: Map 'type' from disaster category
   // For events, status is one of these (not "Maintenance")
   status: Extract<Status, "Active" | "Resolved" | "Pending">;
   timestamp: string;
+  reportedAt: string; // Ensure compatibility with EventType
   location: { lat: number; lng: number; name: string };
   source: "Sensor" | "Manual";
   sensors: SensorData[]; // Associated sensor readings (may be empty)
@@ -152,10 +155,19 @@ export interface EventType {
   name: string;
   description: string;
   type: string;
-  severity: string;
+  severity: Severity;
   timestamp: string;
   date: string;
-  location: string;
-  status: string;
+  location: { lat: number; lng: number; name: string };
+  status: Extract<Status, "Active" | "Resolved" | "Pending">;
   sensors: Sensor[]; // ✅ Ensure sensors are correctly typed
+  disasterCategory: DisasterCategory; // Fix: Add disaster category
+  source: "Sensor" | "Manual"; // Fix: Add source type
+  reportedAt: string; // Fix: Ensure reported timestamp exists
+  reportedBy?:
+    | "Government"
+    | "Military"
+    | "Ministry of Health"
+    | "Public Report";
+  affectedAreas?: { lat: number; lng: number; name: string }[];
 }

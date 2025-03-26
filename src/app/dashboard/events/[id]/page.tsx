@@ -1,95 +1,120 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+import mockEvents from "@/app/data/mockEvents";
+import EventOverview from "@/app/components/events/EventOverview";
+import ResponseActions from "@/app/components/events/ResponseActions";
+import SensorDataComponent from "@/app/components/events/SensorData";
+import EmergencyResources from "@/app/components/events/EmergencyResources";
 import {
   DisasterEvent,
+  SensorData,
   DisasterCategory,
   Severity,
-  Sensor,
 } from "@/app/types/dashboard";
-import mockEvents from "@/app/data/mockEvents"; // Ensure mockEvents aligns with DisasterEvent type
 
-const EventDetailsPage = ({ params }: { params: { eventId: string } }) => {
-  const eventId = parseInt(params.eventId, 10);
+export default function EventDetailsPage() {
+  const params = useParams();
+  const id = params?.id;
+  const eventId = typeof id === "string" ? Number(id) : NaN;
+
   const [eventData, setEventData] = useState<DisasterEvent | null>(null);
 
   useEffect(() => {
     if (!isNaN(eventId)) {
-      const event = mockEvents.find((e) => e.id === eventId);
+      const event = mockEvents.find((e) => e.id === eventId) || null;
 
       if (event) {
         const mappedEvent: DisasterEvent = {
           id: event.id,
           name: event.name,
-          description: event.description || "No description available.",
-          disasterCategory: (event.type as DisasterCategory) || "All", // Ensure valid DisasterCategory
-          severity: (event.severity as Severity) || "Low", // Ensure valid Severity
-          timestamp: event.timestamp,
-          status: (["Active", "Resolved", "Pending"].includes(event.status)
-            ? event.status
-            : "Active") as "Active" | "Resolved" | "Pending",
+          description: event.description ?? "No description available",
           location:
-            typeof event.location === "string"
-              ? { lat: 0, lng: 0, name: event.location } // Fallback for string locations
-              : event.location,
-          source:
-            event.sensors && event.sensors.length > 0 ? "Sensor" : "Manual", // Assign based on sensors
-          sensors: event.sensors || [], // Ensure it's always an array
+            typeof event.location === "object" && event.location !== null
+              ? event.location
+              : {
+                  lat: 0,
+                  lng: 0,
+                  name:
+                    typeof event.location === "string"
+                      ? event.location
+                      : "Unknown",
+                },
+          severity: (event.severity ?? "Low") as Severity, // ✅ Use Severity
+          status: ["Active", "Resolved", "Pending"].includes(event.status)
+            ? (event.status as "Active" | "Resolved" | "Pending")
+            : "Active",
+          disasterCategory: (event.disasterCategory ??
+            "Unknown") as DisasterCategory, // ✅ Use DisasterCategory
+          type: event.disasterCategory ?? "Unknown",
+          timestamp: event.timestamp,
+          date: event.date ?? event.timestamp,
+          reportedAt: event.reportedAt ?? event.timestamp,
+          source: ["Sensor", "Manual"].includes(event.source)
+            ? event.source
+            : "Sensor",
+          sensors: Array.isArray(event.sensors) ? event.sensors : [],
+          reportedBy: event.reportedBy,
+          affectedAreas: event.affectedAreas,
         };
 
         setEventData(mappedEvent);
-      } else {
-        setEventData(null);
       }
     }
   }, [eventId]);
 
   if (!eventData) {
-    return <div className="p-4">Event not found.</div>;
+    return (
+      <p className="text-center text-gray-500">Loading event details...</p>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">{eventData.name}</h1>
-      <p className="text-gray-600">{eventData.description}</p>
+    <div className="max-w-6xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4">Disaster Event Details</h1>
+      <EventOverview event={eventData} />
+      <ResponseActions event={eventData} />
 
-      <div className="mt-4">
-        <p>
-          <strong>Category:</strong> {eventData.disasterCategory}
-        </p>
-        <p>
-          <strong>Severity:</strong> {eventData.severity}
-        </p>
-        <p>
-          <strong>Status:</strong> {eventData.status}
-        </p>
-        <p>
-          <strong>Timestamp:</strong>{" "}
-          {new Date(eventData.timestamp).toLocaleString()}
-        </p>
-        <p>
-          <strong>Source:</strong> {eventData.source}
-        </p>
-        <p>
-          <strong>Location:</strong> {eventData.location.name} (
-          {eventData.location.lat}, {eventData.location.lng})
-        </p>
-      </div>
+      {/* Map sensors ensuring they conform to SensorData type */}
+      <SensorDataComponent
+        sensors={eventData.sensors.map(
+          (sensor): SensorData => ({
+            id: sensor.id,
+            name: sensor.name || "Unknown Sensor",
+            category: sensor.category,
+            disasterCategory: sensor.disasterCategory,
+            unit: sensor.unit ?? "N/A",
+            value: sensor.value ?? 0,
+            lat: sensor.lat ?? 0,
+            lng: sensor.lng ?? 0,
+            type: sensor.disasterCategory,
+            severity: sensor.severity ?? "Low",
+            // For sensors, status is limited to "Active", "Inactive", or "Maintenance"
+            status: (["Active", "Inactive", "Maintenance"].includes(
+              sensor.status
+            )
+              ? sensor.status
+              : "Active") as "Active" | "Inactive" | "Maintenance",
+            lastUpdated: sensor.lastUpdated ?? new Date().toISOString(),
+            batteryLevel: sensor.batteryLevel ?? 100,
+            // Ensure sensor.location is a string; if it's not, fallback to "Unknown"
+            location:
+              typeof sensor.location === "string" ? sensor.location : "Unknown",
+            history: Array.isArray(sensor.history) ? sensor.history : [],
+            eventId: sensor.eventId ?? eventData.id,
+            waterLevel: sensor.waterLevel,
+            moistureLevel: sensor.moistureLevel,
+            magnitude: sensor.magnitude,
+            temperature: sensor.temperature,
+            windSpeed: sensor.windSpeed,
+            capacity: sensor.capacity,
+          })
+        )}
+      />
 
-      {eventData.sensors.length > 0 && (
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold">Associated Sensors</h2>
-          <ul className="list-disc list-inside">
-            {eventData.sensors.map((sensor: Sensor) => (
-              <li key={sensor.id}>
-                {sensor.name} - {sensor.category} ({sensor.value} {sensor.unit})
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <EmergencyResources event={eventData} />
     </div>
   );
-};
-
-export default EventDetailsPage;
+}

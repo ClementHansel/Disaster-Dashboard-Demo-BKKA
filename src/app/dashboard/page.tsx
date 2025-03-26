@@ -6,7 +6,6 @@ import DashboardStats from "@/app/components/widgets/DashboardStats";
 import NotificationPanel from "@/app/components/widgets/NotificationPanel";
 import SensorList from "@/app/components/widgets/SensorList";
 import DisasterSection from "@/app/components/widgets/DisasterSection";
-import MapView from "../components/map/MapView";
 
 import type {
   Alert,
@@ -34,6 +33,12 @@ import {
 import militaryEmergencyData from "@/app/data/disasters/militaryEmergency";
 import riotEvents from "@/app/data/disasters/riot";
 import { volcanicEruptionSensors } from "../data/disasters/volcanicEruption";
+
+import dynamic from "next/dynamic";
+
+const MapView = dynamic(() => import("../components/map/MapView"), {
+  ssr: false, // Disable Server-Side Rendering
+});
 
 // List of disaster categories (for filtering)
 const disasterTypes: DisasterCategory[] = [
@@ -69,7 +74,7 @@ const allSensors: Record<DisasterCategory, (DisasterEvent | SensorData)[]> = {
   "Military Emergency": militaryEmergencyData,
   "Pandemic & Outbreak": pandemicOutbreakEvents,
   Riot: riotEvents,
-  "Volcanic Eruption": volcanicEruptionSensors, // Placeholder, add actual data if available
+  "Volcanic Eruption": volcanicEruptionSensors,
   All: [
     ...floodSensors,
     ...earthquakeSensors,
@@ -84,6 +89,7 @@ const allSensors: Record<DisasterCategory, (DisasterEvent | SensorData)[]> = {
     ...militaryEmergencyData,
     ...pandemicOutbreakEvents,
     ...riotEvents,
+    ...volcanicEruptionSensors,
   ],
 };
 
@@ -141,6 +147,9 @@ function mapDisasterEventsToSensorData(
 }
 
 export default function DashboardPage() {
+  if (typeof window !== "undefined") {
+    // Safe to use window here
+  }
   const [activeDisaster, setActiveDisaster] = useState<DisasterCategory>("All");
   const [alerts] = useState<Alert[]>([]);
   // Disaster events would typically be loaded from an API.
@@ -155,9 +164,10 @@ export default function DashboardPage() {
   const filteredSensors: SensorData[] =
     activeDisaster === "All"
       ? allSensors.All.filter((item): item is SensorData => "category" in item)
-      : allSensors[activeDisaster].filter(
-          (item): item is SensorData => "category" in item
-        ) || [];
+      : (allSensors[activeDisaster] || []).filter(
+          (item): item is SensorData =>
+            "category" in item && item.disasterCategory === activeDisaster
+        );
 
   // Filter disaster events based on active disaster category
   const filteredEvents: DisasterEvent[] =
@@ -176,7 +186,10 @@ export default function DashboardPage() {
   // Merge sensor data from both sources into one unified array
   const allFilteredSensors: SensorData[] = [
     ...filteredSensors,
-    ...eventSensors,
+    ...eventSensors.filter(
+      (eventSensor) =>
+        !filteredSensors.some((sensor) => sensor.id === eventSensor.id)
+    ),
   ];
 
   return (

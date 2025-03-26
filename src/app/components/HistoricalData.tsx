@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import mockData from "@/app/data/mockData"; // ✅ Import default export
+import { floodSensors } from "@/app/data/disasters/flood"; // ✅ Import default export
 
 const HistoricalData = () => {
   const [selectedSensor, setSelectedSensor] = useState<number | null>(null);
@@ -10,8 +10,8 @@ const HistoricalData = () => {
 
   // ✅ Use floodSensors correctly
   const filteredData = selectedSensor
-    ? mockData.floodSensors.filter((sensor) => sensor.id === selectedSensor)
-    : mockData.floodSensors;
+    ? floodSensors.filter((sensor) => sensor.id === selectedSensor)
+    : floodSensors;
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md">
@@ -32,7 +32,7 @@ const HistoricalData = () => {
         className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300"
       >
         <option value="">All Sensors</option>
-        {mockData.floodSensors.map((sensor) => (
+        {floodSensors.map((sensor) => (
           <option key={sensor.id} value={sensor.id}>
             {sensor.name}
           </option>
@@ -47,7 +47,7 @@ const HistoricalData = () => {
           >
             <h3 className="text-lg font-medium">{sensor.name}</h3>
             <p>Water Level: {sensor.waterLevel}m</p>
-            <p>Risk: {sensor.risk}</p>
+            <p>Risk: {sensor.severity}</p>
           </div>
         ))}
       </div>

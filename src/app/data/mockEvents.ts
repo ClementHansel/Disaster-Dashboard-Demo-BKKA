@@ -1,4 +1,4 @@
-import type { EventType } from "@/app/types/dashboard";
+import { EventType } from "../types/dashboard";
 
 const mockEvents: EventType[] = [
   {
@@ -7,18 +7,25 @@ const mockEvents: EventType[] = [
     description:
       "Heavy rainfall has caused water levels to rise significantly.",
     type: "Flood",
+    disasterCategory: "Flood", // ✅ Added
     severity: "High",
     timestamp: "2025-03-20T10:00:00Z",
+    reportedAt: "2025-03-20T09:50:00Z", // ✅ Added
     date: "2025-03-20",
-    location: "Jakarta, Indonesia",
+    location: {
+      lat: -6.2088,
+      lng: 106.8456,
+      name: "Jakarta, Indonesia",
+    },
     status: "Active",
+    source: "Manual", // ✅ Added
     sensors: [
       {
         id: 101,
         name: "Water Level Sensor",
         category: "Water Level",
         disasterCategory: "Flood",
-        type: "Flood", // ✅ Fixed: Added `type`
+        type: "Flood",
         lat: -6.2088,
         lng: 106.8456,
         waterLevel: 3.2,
@@ -40,18 +47,25 @@ const mockEvents: EventType[] = [
     name: "Bali Earthquake Alert",
     description: "A magnitude 6.5 earthquake was detected near Bali.",
     type: "Earthquake",
+    disasterCategory: "Earthquake", // ✅ Added
     severity: "Critical",
     timestamp: "2025-03-15T11:30:00Z",
+    reportedAt: "2025-03-15T11:00:00Z", // ✅ Added
     date: "2025-03-15",
-    location: "Bali, Indonesia",
+    location: {
+      lat: -8.3405,
+      lng: 115.092,
+      name: "Bali, Indonesia",
+    },
     status: "Resolved",
+    source: "Manual", // ✅ Added
     sensors: [
       {
         id: 102,
         name: "Seismic Sensor",
         category: "Seismic",
         disasterCategory: "Earthquake",
-        type: "Earthquake", // ✅ Fixed: Added `type`
+        type: "Earthquake",
         lat: -8.3405,
         lng: 115.092,
         magnitude: 6.5,
