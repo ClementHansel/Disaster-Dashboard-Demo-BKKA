@@ -44,9 +44,11 @@ export const mockSensorsNotifications: SensorNotification[] = Array.from(
       type: (["error", "warning", "success"] as const)[i % 3],
       categories: data.categories,
       site: `Site ${String.fromCharCode(65 + (i % 5))}`,
-      timestamp: `2025-03-${String(11 - (i % 10)).padStart(2, "0")} ${
-        10 + (i % 10)
-      }:30`,
+      timestamp: new Date(
+        `2025-03-${String(11 - (i % 10)).padStart(2, "0")}T${
+          10 + (i % 10)
+        }:30:00Z`
+      ).toISOString(),
     };
   }
 ).sort(
