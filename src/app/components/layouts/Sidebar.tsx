@@ -9,6 +9,7 @@ import {
   FaCamera,
   FaTasks,
   FaDatabase,
+  FaBrain,
   FaRobot,
   FaUser,
   FaQuestionCircle,
@@ -121,6 +122,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
             >
               <FaDatabase />
               {isExpanded && <span className="text-sm">Modeling</span>}
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard/AI-training"
+              className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded"
+              title={!isExpanded ? "AI Training" : ""}
+            >
+              <FaBrain />
+              {isExpanded && <span className="text-sm">AI Training</span>}
             </Link>
           </li>
           <li>

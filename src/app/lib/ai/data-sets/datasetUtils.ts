@@ -1,30 +1,20 @@
-export interface Annotation {
-  id: string;
-  timestamp: string;
-  label: string;
-  description: string;
-  sensorId: string;
-}
-
-export interface DatasetGroup {
-  id: string;
-  name: string;
-  annotations: Annotation[];
-}
+import { DatasetGroup } from "@/app/types/ai/data-sets/dataset";
 
 // Function to create a new dataset group
 export const createDatasetGroup = (
   name: string,
-  annotations: Annotation[]
+  sensorId: string,
+  annotationIds: string[]
 ): DatasetGroup => {
   return {
     id: crypto.randomUUID(),
     name,
-    annotations,
+    sensorId,
+    annotations: annotationIds,
   };
 };
 
-// Function to update an existing dataset group
+// Function to update an existing dataset group's name
 export const updateDatasetGroup = (
   groups: DatasetGroup[],
   id: string,
@@ -33,7 +23,7 @@ export const updateDatasetGroup = (
   return groups.map((group) => (group.id === id ? { ...group, name } : group));
 };
 
-// Function to delete a dataset group
+// Function to delete a dataset group by ID
 export const deleteDatasetGroup = (
   groups: DatasetGroup[],
   id: string
@@ -41,7 +31,7 @@ export const deleteDatasetGroup = (
   return groups.filter((group) => group.id !== id);
 };
 
-// Function to delete multiple dataset groups
+// Function to delete multiple dataset groups by array of IDs
 export const deleteMultipleDatasetGroups = (
   groups: DatasetGroup[],
   ids: string[]

@@ -10,7 +10,7 @@ export interface DatasetGroup {
   id: string;
   name: string;
   sensorId: string;
-  annotations: string[];
+  annotations: string[]; // Array of annotation IDs
 }
 
 export interface Site {
@@ -24,7 +24,14 @@ export interface Sensor {
   siteId: string;
 }
 
-// Ensure TypeScript knows `sites` is an array of `Site`
+export interface Dataset {
+  id: string;
+  name: string;
+  size: number;
+  uploadedAt: string;
+}
+
+// For reusable selector components
 export interface SiteSelectorProps {
   sites: Site[];
   onSelect: (site: Site | null) => void;
