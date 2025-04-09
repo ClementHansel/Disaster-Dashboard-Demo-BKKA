@@ -3,12 +3,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockDatasetGroups } from "@/app/data/ai/data-sets/mockDatasets";
 import { mockTrainingJobs } from "@/app/data/ai/AI-training/mockTrainingJobs";
 import TrainingJobCard from "@/app/components/AI-training/TrainingJobCard";
 import TrainingJobTable from "@/app/components/AI-training/TrainingJobTable";
 import TrainingJobLogsModal from "@/app/components/AI-training/TrainingJobLogsModal";
 import { TrainingJob } from "@/app/types/ai/AI-training/training";
+import CreateTrainingTaskForm from "@/app/components/AI-training/CreateTrainingJob";
 
 const AITrainingPage = () => {
   const [selectedLogs, setSelectedLogs] = useState<string>("");
@@ -36,16 +36,13 @@ const AITrainingPage = () => {
         </p>
       </header>
 
-      {/* Dataset Groups Section */}
       <section>
-        <h2 className="text-xl font-semibold mb-3">Available Dataset Groups</h2>
-        <ul className="list-disc list-inside text-gray-800 space-y-1">
-          {mockDatasetGroups.map((group) => (
-            <li key={group.id}>
-              {group.name} (Sensor: {group.sensorId})
-            </li>
-          ))}
-        </ul>
+        <CreateTrainingTaskForm
+          onSubmit={(data) => {
+            console.log("Create Task:", data);
+            // Optional: Add it to the mockTrainingJobs list or show confirmation
+          }}
+        />
       </section>
 
       {/* Training Jobs Cards */}

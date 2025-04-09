@@ -1,0 +1,119 @@
+"use client";
+
+import React, { useState } from "react";
+import { mockDatasetGroups } from "@/app/data/ai/data-sets/mockDatasets";
+
+interface CreateTrainingTaskFormProps {
+  onSubmit: (data: {
+    datasetGroupId: string;
+    modelType: string;
+    notes?: string;
+  }) => void;
+}
+
+const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
+  onSubmit,
+}) => {
+  const [selectedDataset, setSelectedDataset] = useState("");
+  const [modelType, setModelType] = useState("default");
+  const [notes, setNotes] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedDataset) return;
+
+    onSubmit({
+      datasetGroupId: selectedDataset,
+      modelType,
+      notes,
+    });
+
+    // Reset
+    setSelectedDataset("");
+    setModelType("default");
+    setNotes("");
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white border rounded-xl p-6 shadow space-y-4"
+    >
+      <h2 className="text-xl font-semibold mb-2">Create AI Training Task</h2>
+
+      {/* Dataset Group */}
+      <div>
+        <label
+          htmlFor="dataset-group"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Select Dataset Group
+        </label>
+        <select
+          id="dataset-group"
+          className="w-full border rounded p-2"
+          value={selectedDataset}
+          onChange={(e) => setSelectedDataset(e.target.value)}
+          required
+        >
+          <option value="" disabled>
+            -- Choose a dataset group --
+          </option>
+          {mockDatasetGroups.map((group) => (
+            <option key={group.id} value={group.id}>
+              {group.name} (Sensor: {group.sensorId})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Model Type */}
+      <div>
+        <label
+          htmlFor="model-type"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Model Type (optional)
+        </label>
+        <select
+          id="model-type"
+          className="w-full border rounded p-2"
+          value={modelType}
+          onChange={(e) => setModelType(e.target.value)}
+        >
+          <option value="default">Default</option>
+          <option value="cnn">CNN</option>
+          <option value="lstm">LSTM</option>
+          <option value="transformer">Transformer</option>
+        </select>
+      </div>
+
+      {/* Notes */}
+      <div>
+        <label
+          htmlFor="notes"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Notes (optional)
+        </label>
+        <textarea
+          id="notes"
+          className="w-full border rounded p-2"
+          rows={3}
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Any notes or description..."
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Start Training
+      </button>
+    </form>
+  );
+};
+
+export default CreateTrainingTaskForm;
