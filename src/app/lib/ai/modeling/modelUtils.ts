@@ -1,59 +1,64 @@
-// lib/ai/modeling/modelUtils.ts
+// src/app/lib/ai/modeling/modelUtils.ts
 
 import { Model } from "@/app/types/ai/modeling/model";
 
 let mockModels: Model[] = [];
 
-export function getModels(): Model[] {
-  return mockModels;
-}
-
-export function createModel(newModel: Omit<Model, "id" | "createdAt">): Model {
-  const model: Model = {
-    ...newModel,
+// Internal helper: Create full Model object with defaults
+function buildModel(partial: Omit<Model, "id" | "createdAt">): Model {
+  return {
+    ...partial,
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
+    status: partial.status ?? "Draft",
+    type: partial.type ?? "Supervised",
+    accuracy: partial.accuracy ?? 0,
+    ownerRole: partial.ownerRole ?? "Editor",
   };
-  mockModels.push(model);
-  return model;
 }
 
-export function updateModel(
-  id: string,
-  updatedFields: Partial<Model>
-): Model | null {
-  const index = mockModels.findIndex((m) => m.id === id);
-  if (index === -1) return null;
+export const modelService = {
+  getAll(): Model[] {
+    return mockModels;
+  },
 
-  mockModels[index] = {
-    ...mockModels[index],
-    ...updatedFields,
-  };
+  create(data: Omit<Model, "id" | "createdAt">): Model {
+    const newModel = buildModel(data);
+    mockModels.push(newModel);
+    return newModel;
+  },
 
-  return mockModels[index];
-}
+  update(id: string, updates: Partial<Model>): Model | null {
+    const index = mockModels.findIndex((m) => m.id === id);
+    if (index === -1) return null;
 
-export function deleteModels(ids: string[]): void {
-  mockModels = mockModels.filter((m) => !ids.includes(m.id));
-}
-
-export function uploadModels(file: File): Promise<Model[]> {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = JSON.parse(reader.result as string) as Model[];
-        mockModels = [...mockModels, ...parsed];
-        resolve(parsed);
-      } catch (e) {
-        console.error("Failed to parse model file:", e);
-        resolve([]);
-      }
+    const updatedModel: Model = {
+      ...mockModels[index],
+      ...updates,
+      lastUpdated: new Date().toISOString(),
     };
-    reader.readAsText(file);
-  });
-}
 
-export function downloadModels(): string {
-  return JSON.stringify(mockModels, null, 2);
-}
+    mockModels[index] = updatedModel;
+    return updatedModel;
+  },
+
+  delete(ids: string[]): void {
+    mockModels = mockModels.filter((m) => !ids.includes(m.id));
+  },
+
+  async upload(file: File): Promise<Model[]> {
+    try {
+      const content = await file.text();
+      const parsed = JSON.parse(content) as Model[];
+      mockModels = [...mockModels, ...parsed];
+      return parsed;
+    } catch (error) {
+      console.error("Failed to parse uploaded model file:", error);
+      return [];
+    }
+  },
+
+  download(): string {
+    return JSON.stringify(mockModels, null, 2);
+  },
+};

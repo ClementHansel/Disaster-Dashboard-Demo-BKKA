@@ -1,23 +1,130 @@
 import { Model } from "@/app/types/ai/modeling/model";
-import { v4 as uuidv4 } from "uuid";
 
 export const mockModels: Model[] = [
   {
-    id: uuidv4(),
+    id: "anomaly-detector",
     name: "Anomaly Detector",
     version: "1.0.0",
     createdAt: new Date("2024-12-01T10:30:00Z").toISOString(),
     description: "Detects anomalies in buoy sensor data",
     tags: ["anomaly", "buoy", "sensor"],
     fileUrl: "/downloads/anomaly-detector-v1.zip",
+    status: "Trained",
+    accuracy: 92.3,
+    lastUpdated: new Date("2025-01-01T12:00:00Z").toISOString(),
+    type: "Supervised",
+    ownerRole: "Admin",
+    datasetsType: "group",
+    datasetGroupIds: ["group-1", "group-2"],
+    logs: [
+      {
+        timestamp: "2024-12-02T11:00:00Z",
+        message: "Model training started.",
+        level: "info",
+      },
+      {
+        timestamp: "2024-12-02T13:30:00Z",
+        message: "Training completed with 92.3% accuracy.",
+        level: "info",
+      },
+      {
+        timestamp: "2025-01-01T12:00:00Z",
+        message: "Model updated for improved stability.",
+        level: "info",
+      },
+    ],
   },
   {
-    id: uuidv4(),
+    id: "wave-predictor",
     name: "Wave Predictor",
     version: "2.1.3",
     createdAt: new Date("2025-02-15T14:45:00Z").toISOString(),
     description: "Predicts wave height and behavior",
     tags: ["prediction", "waves", "ML"],
     fileUrl: "/downloads/wave-predictor-v2.zip",
+    status: "Deployed",
+    accuracy: 88.9,
+    lastUpdated: new Date("2025-03-20T08:30:00Z").toISOString(),
+    type: "Time Series",
+    ownerRole: "Manager",
+    datasetsType: "upload",
+    uploadedFileName: "wave-training-data.csv",
+    logs: [
+      {
+        timestamp: "2025-02-16T10:00:00Z",
+        message: "Model training completed.",
+        level: "info",
+      },
+      {
+        timestamp: "2025-03-20T08:30:00Z",
+        message: "Deployed to production environment.",
+        level: "info",
+      },
+    ],
   },
+  {
+    id: "sensor-noise-filter",
+    name: "Sensor Noise Filter",
+    version: "0.9.0",
+    createdAt: new Date("2024-11-10T09:00:00Z").toISOString(),
+    description: "Filters out noise from raw sensor readings",
+    tags: ["filter", "sensor", "preprocessing"],
+    fileUrl: "/downloads/sensor-filter.zip",
+    status: "Draft",
+    accuracy: 75.6,
+    lastUpdated: new Date("2025-01-15T11:00:00Z").toISOString(),
+    type: "Unsupervised",
+    ownerRole: "Editor",
+    datasetsType: "group",
+    datasetGroupIds: ["group-3"],
+    logs: [
+      {
+        timestamp: "2024-11-11T12:00:00Z",
+        message: "Initial draft version uploaded.",
+        level: "info",
+      },
+      {
+        timestamp: "2025-01-15T11:00:00Z",
+        message: "Pending accuracy improvement.",
+        level: "warning",
+      },
+    ],
+  },
+  {
+    id: "tide-level-classifier",
+    name: "Tide Level Classifier",
+    version: "3.0.1",
+    createdAt: new Date("2025-01-05T07:20:00Z").toISOString(),
+    description: "Classifies tide levels for marine forecasting",
+    tags: ["classification", "tide", "marine"],
+    fileUrl: "/downloads/tide-classifier-v3.zip",
+    status: "Failed",
+    accuracy: 65.4,
+    lastUpdated: new Date("2025-01-25T15:15:00Z").toISOString(),
+    type: "Classification",
+    ownerRole: "Admin",
+    datasetsType: "upload",
+    uploadedFileName: "tide-level-dataset.json",
+    logs: [
+      {
+        timestamp: "2025-01-10T10:00:00Z",
+        message: "Training started.",
+        level: "info",
+      },
+      {
+        timestamp: "2025-01-25T15:15:00Z",
+        message: "Training failed due to over-fitting.",
+        level: "error",
+      },
+    ],
+  },
+];
+
+// mockModels.ts
+export const mockModelMetrics = [
+  { epoch: 1, accuracy: 0.78, loss: 0.45 },
+  { epoch: 2, accuracy: 0.82, loss: 0.38 },
+  { epoch: 3, accuracy: 0.85, loss: 0.32 },
+  { epoch: 4, accuracy: 0.88, loss: 0.29 },
+  { epoch: 5, accuracy: 0.92, loss: 0.25 },
 ];

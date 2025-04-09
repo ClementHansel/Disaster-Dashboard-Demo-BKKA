@@ -13,12 +13,23 @@ export default function UploadDownloadControls({
   onDownloadClick,
 }: UploadDownloadControlsProps) {
   return (
-    <div className="flex gap-2">
-      <Button onClick={onUploadClick}>
-        <Upload className="mr-2 h-4 w-4" /> Upload
+    <div className="flex items-center gap-2">
+      <Button
+        onClick={onUploadClick}
+        aria-label="Upload model"
+        title="Upload model"
+      >
+        <Upload className="mr-2 h-4 w-4" />
+        Upload
       </Button>
-      <Button variant="outline" onClick={onDownloadClick}>
-        <Download className="mr-2 h-4 w-4" /> Download
+      <Button
+        variant="outline"
+        onClick={onDownloadClick}
+        aria-label="Download model"
+        title="Download model"
+      >
+        <Download className="mr-2 h-4 w-4" />
+        Download
       </Button>
     </div>
   );

@@ -10,12 +10,28 @@ type DatasetFormProps = {
 export default function DatasetForm({ onSubmit }: DatasetFormProps) {
   const [name, setName] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (file) {
-      onSubmit({ name, file });
+
+    if (!name.trim()) {
+      setError("Dataset name is required.");
+      return;
     }
+
+    if (!file) {
+      setError("Please upload a file.");
+      return;
+    }
+
+    setError("");
+    onSubmit({ name, file });
+
+    // Optional: reset form
+    setName("");
+    setFile(null);
+    (document.getElementById("dataset-file") as HTMLInputElement).value = "";
   };
 
   return (
@@ -51,7 +67,9 @@ export default function DatasetForm({ onSubmit }: DatasetFormProps) {
         />
       </div>
 
-      <Button type="submit" disabled={!file}>
+      {error && <p className="text-sm text-red-500">{error}</p>}
+
+      <Button type="submit" disabled={!name.trim() || !file}>
         Upload
       </Button>
     </form>

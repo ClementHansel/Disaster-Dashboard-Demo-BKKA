@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogFooter,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -27,10 +28,12 @@ export default function DeleteConfirmationModal({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
         </DialogHeader>
-        <div className="py-4 text-sm">{message}</div>
-        <DialogFooter>
+
+        <div className="py-2 text-sm text-muted-foreground">{message}</div>
+
+        <DialogFooter className="flex justify-end gap-2">
           <Button variant="ghost" onClick={onClose}>
             Cancel
           </Button>

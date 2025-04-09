@@ -11,6 +11,8 @@ export const createDatasetGroup = (
     name,
     sensorId,
     annotations: annotationIds,
+    datasets: [], // default empty array
+    uploadedAt: new Date().toISOString(), // current timestamp
   };
 };
 

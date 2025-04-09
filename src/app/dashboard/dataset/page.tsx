@@ -81,6 +81,8 @@ const DatasetPage = () => {
       name: groupName,
       sensorId: selectedSensors[0] || "",
       annotations: [],
+      datasets: [], // Add this (empty by default or however you structure it)
+      uploadedAt: new Date().toISOString(), // Add this (current time for now)
     };
 
     setDatasetGroups((prev) => [...prev, newGroup]);
