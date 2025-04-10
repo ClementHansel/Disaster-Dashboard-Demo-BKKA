@@ -8,6 +8,25 @@ type TrainingProgressProps = {
   status?: string;
 };
 
+const getStatusText = (status?: string) => {
+  switch (status) {
+    case "Running":
+    case "Training":
+      return "Model is training...";
+    case "Queued":
+    case "Pending":
+      return "Waiting to start...";
+    case "Success":
+    case "Completed":
+      return "Training completed successfully.";
+    case "Failed":
+    case "Cancelled":
+      return "Training stopped or failed.";
+    default:
+      return "";
+  }
+};
+
 const TrainingProgress: React.FC<TrainingProgressProps> = ({
   progress,
   status,
@@ -19,7 +38,9 @@ const TrainingProgress: React.FC<TrainingProgressProps> = ({
         <span>{progress}%</span>
       </div>
       <Progress value={progress} />
-      {status && <p className="text-xs text-muted-foreground">{status}</p>}
+      {status && (
+        <p className="text-xs text-muted-foreground">{getStatusText(status)}</p>
+      )}
     </div>
   );
 };

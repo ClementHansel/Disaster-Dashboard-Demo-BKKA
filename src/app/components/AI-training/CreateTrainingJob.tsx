@@ -9,6 +9,10 @@ interface CreateTrainingTaskFormProps {
     datasetGroupId: string;
     modelType: string;
     notes?: string;
+    site?: string;
+    agentName?: string;
+    readyForDeployment?: boolean;
+    originType?: "base" | "clone" | "fine-tune";
   }) => void;
 }
 
@@ -19,6 +23,13 @@ const modelOptions = [
   { value: "transformer", label: "Transformer" },
 ];
 
+const mockSites = [
+  "Jakarta Site A",
+  "Jakarta Site B",
+  "North Coast",
+  "Lab Unit",
+];
+
 const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
   onSubmit,
 }) => {
@@ -26,6 +37,12 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
   const [selectedDataset, setSelectedDataset] = useState("");
   const [modelType, setModelType] = useState("default");
   const [notes, setNotes] = useState("");
+  const [site, setSite] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [readyForDeployment, setReadyForDeployment] = useState(false);
+  const [originType, setOriginType] = useState<"base" | "clone" | "fine-tune">(
+    "fine-tune"
+  );
 
   const isFormValid = name.trim() !== "" && selectedDataset !== "";
 
@@ -38,13 +55,21 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
       datasetGroupId: selectedDataset,
       modelType,
       notes,
+      site,
+      agentName,
+      readyForDeployment,
+      originType,
     });
 
-    // Reset
+    // Reset form
     setName("");
     setSelectedDataset("");
     setModelType("default");
     setNotes("");
+    setSite("");
+    setAgentName("");
+    setReadyForDeployment(false);
+    setOriginType("fine-tune");
   };
 
   return (
@@ -54,12 +79,9 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
     >
       <h2 className="text-xl font-semibold mb-2">Create AI Training Task</h2>
 
-      {/* Job Name */}
+      {/* Training Job Name */}
       <div>
-        <label
-          htmlFor="job-name"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label htmlFor="job-name" className="block text-sm font-medium mb-1">
           Training Job Name
         </label>
         <input
@@ -68,7 +90,7 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
           className="w-full border rounded p-2"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Anomaly Detection March Batch"
+          placeholder="e.g. March Anomaly Detection"
           required
         />
       </div>
@@ -77,7 +99,7 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
       <div>
         <label
           htmlFor="dataset-group"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
         >
           Select Dataset Group
         </label>
@@ -99,19 +121,67 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
         </select>
       </div>
 
+      {/* Site Selection */}
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Site (Optional)
+        </label>
+        <select
+          className="w-full border rounded p-2"
+          value={site}
+          onChange={(e) => setSite(e.target.value)}
+          aria-label="Select Site"
+        >
+          <option value="">-- Select Site --</option>
+          {mockSites.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Agent Name */}
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Agent Name (Optional)
+        </label>
+        <input
+          type="text"
+          className="w-full border rounded p-2"
+          value={agentName}
+          onChange={(e) => setAgentName(e.target.value)}
+          placeholder="e.g. Jakarta Anomaly Bot"
+        />
+      </div>
+
+      {/* Model Origin Type */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Model Origin</label>
+        <select
+          className="w-full border rounded p-2"
+          value={originType}
+          onChange={(e) =>
+            setOriginType(e.target.value as "base" | "clone" | "fine-tune")
+          }
+          aria-label="Select Origin Type"
+        >
+          <option value="base">Base Model</option>
+          <option value="fine-tune">Fine-Tuned</option>
+          <option value="clone">Clone</option>
+        </select>
+      </div>
+
       {/* Model Type */}
       <div>
-        <label
-          htmlFor="model-type"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label className="block text-sm font-medium mb-1">
           Model Type (optional)
         </label>
         <select
-          id="model-type"
           className="w-full border rounded p-2"
           value={modelType}
           onChange={(e) => setModelType(e.target.value)}
+          aria-label="Select Model Type"
         >
           {modelOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -123,20 +193,29 @@ const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
 
       {/* Notes */}
       <div>
-        <label
-          htmlFor="notes"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label className="block text-sm font-medium mb-1">
           Notes (optional)
         </label>
         <textarea
-          id="notes"
           className="w-full border rounded p-2"
           rows={3}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Any notes or description..."
         />
+      </div>
+
+      {/* Deployment Ready Toggle */}
+      <div className="flex items-center space-x-2">
+        <input
+          id="ready-deploy"
+          type="checkbox"
+          checked={readyForDeployment}
+          onChange={(e) => setReadyForDeployment(e.target.checked)}
+        />
+        <label htmlFor="ready-deploy" className="text-sm">
+          Mark as Ready for Deployment
+        </label>
       </div>
 
       <button

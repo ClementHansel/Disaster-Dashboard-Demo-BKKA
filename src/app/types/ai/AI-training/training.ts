@@ -22,4 +22,20 @@ export type TrainingJob = {
   startedAt?: string;
   completedAt?: string;
   resultUrl?: string; // Download result if success
+  site?: string; // e.g., "North Jakarta"
+  originType?: "base" | "clone" | "fine-tune"; // for origin info
+};
+
+export type Agent = {
+  id: string;
+  modelId: string;
+  name: string;
+  description?: string;
+  status: "Ready" | "Training" | "Archived";
+  createdAt: string;
+  updatedAt?: string;
+  metrics?: {
+    accuracy?: number;
+    loss?: number;
+  };
 };

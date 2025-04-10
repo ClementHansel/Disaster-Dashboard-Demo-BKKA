@@ -10,6 +10,8 @@ import { TrainingJob } from "@/app/types/ai/AI-training/training";
 import CreateTrainingTaskForm from "@/app/components/AI-training/CreateTrainingJob";
 import AgentSaveModal from "@/app/components/AI-training/AgentSaveModal";
 import { useTrainingJobs } from "@/app/components/AI-training/useTrainingJobs";
+import AgentList from "@/app/components/AI-training/AgentList";
+import { mockAgents } from "@/app/lib/ai/AI-training/agentUtils";
 
 const AITrainingPage = () => {
   const [selectedLogs, setSelectedLogs] = useState<string>("");
@@ -125,6 +127,15 @@ const AITrainingPage = () => {
       <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Training Jobs Overview</h2>
         <TrainingJobTable jobs={jobs} onViewLogs={handleViewLogs} />
+      </section>
+
+      <section className="mb-10">
+        <h2 className="text-xl font-semibold mb-3">Ready-to-Deploy Agents</h2>
+        <AgentList
+          agents={mockAgents}
+          onEdit={(agent) => console.log("Edit", agent)}
+          onRetrain={(agent) => console.log("Retrain", agent)}
+        />
       </section>
 
       {/* Logs Modal */}

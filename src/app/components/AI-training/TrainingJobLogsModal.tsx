@@ -1,3 +1,4 @@
+// src/app/components/AI-training/TrainingJobLogsModal.tsx
 "use client";
 
 import { useEffect } from "react";
@@ -16,16 +17,13 @@ export default function TrainingJobLogsModal({
   logs,
 }: TrainingJobLogsModalProps) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
+
+  if (!isOpen) return null;
 
   return (
     <Dialog
@@ -36,14 +34,11 @@ export default function TrainingJobLogsModal({
       role="dialog"
     >
       {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
-        aria-hidden="true"
-      />
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
-      {/* Modal Wrapper */}
+      {/* Modal Content */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-3xl rounded-xl bg-white dark:bg-background p-6 shadow-xl relative overflow-hidden">
+        <Dialog.Panel className="w-full max-w-3xl rounded-xl bg-white dark:bg-gray-900 p-6 shadow-2xl relative">
           {/* Close Button */}
           <button
             onClick={onClose}
@@ -54,13 +49,13 @@ export default function TrainingJobLogsModal({
           </button>
 
           {/* Title */}
-          <Dialog.Title className="text-lg font-semibold mb-4">
+          <Dialog.Title className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
             Training Logs
           </Dialog.Title>
 
-          {/* Logs Content */}
-          <div className="bg-muted rounded p-4 text-sm whitespace-pre-wrap max-h-[60vh] overflow-y-auto border border-muted-foreground/20">
-            {logs && logs.trim().length > 0 ? logs : "No logs available."}
+          {/* Logs */}
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-4 text-sm font-mono whitespace-pre-wrap max-h-[60vh] overflow-y-auto border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+            {logs?.trim().length > 0 ? logs : "No logs available."}
           </div>
         </Dialog.Panel>
       </div>
