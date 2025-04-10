@@ -1,9 +1,11 @@
+// src/app/data/ai/AI-training/mockTrainingJobs.ts
 import { TrainingJob } from "@/app/types/ai/AI-training/training";
 import { v4 as uuidv4 } from "uuid";
 
 export const mockTrainingJobs: TrainingJob[] = [
   {
     id: uuidv4(),
+    name: "Anomaly Detector Training Job #1",
     modelId: "model-001",
     modelName: "Anomaly Detector",
     datasetIds: ["dataset-001", "dataset-002"],
@@ -19,9 +21,11 @@ export const mockTrainingJobs: TrainingJob[] = [
       "[10:45] Model saved to /downloads/anomaly-detector-trained-v1.zip",
     ],
     resultUrl: "/downloads/anomaly-detector-trained-v1.zip",
+    statusMessage: "Training completed successfully",
   },
   {
     id: uuidv4(),
+    name: "Wave Predictor Training Run",
     modelId: "model-002",
     modelName: "Wave Predictor",
     datasetIds: ["dataset-003"],
@@ -35,9 +39,11 @@ export const mockTrainingJobs: TrainingJob[] = [
       "[10:30] Training in progress...",
     ],
     resultUrl: "",
+    statusMessage: "Currently training...",
   },
   {
     id: uuidv4(),
+    name: "Buoy Classifier Attempt",
     modelId: "model-003",
     modelName: "Buoy Classifier",
     datasetIds: ["dataset-004"],
@@ -52,5 +58,6 @@ export const mockTrainingJobs: TrainingJob[] = [
       "[13:40] Job failed",
     ],
     resultUrl: "",
+    statusMessage: "Data preprocessing failed",
   },
 ];

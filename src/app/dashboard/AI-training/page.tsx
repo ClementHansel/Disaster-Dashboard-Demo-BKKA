@@ -3,28 +3,60 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { mockTrainingJobs } from "@/app/data/ai/AI-training/mockTrainingJobs";
 import TrainingJobCard from "@/app/components/AI-training/TrainingJobCard";
 import TrainingJobTable from "@/app/components/AI-training/TrainingJobTable";
 import TrainingJobLogsModal from "@/app/components/AI-training/TrainingJobLogsModal";
 import { TrainingJob } from "@/app/types/ai/AI-training/training";
 import CreateTrainingTaskForm from "@/app/components/AI-training/CreateTrainingJob";
+import AgentSaveModal from "@/app/components/AI-training/AgentSaveModal";
+import { useTrainingJobs } from "@/app/components/AI-training/useTrainingJobs";
 
 const AITrainingPage = () => {
   const [selectedLogs, setSelectedLogs] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLogsModalOpen, setIsLogsModalOpen] = useState<boolean>(false);
+  const [isAgentModalOpen, setIsAgentModalOpen] = useState<boolean>(false);
+  const [selectedModelId, setSelectedModelId] = useState<string>("");
+
   const router = useRouter();
+  const { jobs, addJob, updateJob } = useTrainingJobs();
 
   const handleViewLogs = (jobId: string) => {
-    const job = mockTrainingJobs.find((j) => j.id === jobId);
+    const job = jobs.find((j: TrainingJob) => j.id === jobId);
     if (job) {
-      setSelectedLogs(job.logs.join("\n"));
-      setIsModalOpen(true);
+      setSelectedLogs(job.logs?.join("\n") ?? "No logs available.");
+      setIsLogsModalOpen(true);
     }
   };
 
-  const handleCardClick = (modelId: string) => {
-    router.push(`/dashboard/models/${modelId}`);
+  const handleCardClick = (modelId?: string) => {
+    if (modelId) {
+      router.push(`/dashboard/models/${modelId}`);
+    }
+  };
+
+  const handleSaveAgent = (modelId: string) => {
+    setSelectedModelId(modelId);
+    setIsAgentModalOpen(true);
+  };
+
+  const handleUpdateProgress = (jobId: string) => {
+    const job = jobs.find((j) => j.id === jobId);
+    if (job && job.progress < 100) {
+      const updatedProgress = Math.min(job.progress + 10, 100);
+      updateJob({
+        ...job,
+        progress: updatedProgress,
+        status: updatedProgress === 100 ? "Completed" : "Running",
+        statusMessage:
+          updatedProgress === 100
+            ? "Training complete!"
+            : "Training in progress...",
+        logs: [
+          ...(job.logs || []),
+          `[00:${updatedProgress}] Progress at ${updatedProgress}%`,
+        ],
+      });
+    }
   };
 
   return (
@@ -39,8 +71,22 @@ const AITrainingPage = () => {
       <section>
         <CreateTrainingTaskForm
           onSubmit={(data) => {
-            console.log("Create Task:", data);
-            // Optional: Add it to the mockTrainingJobs list or show confirmation
+            const newJob: TrainingJob = {
+              id: crypto.randomUUID(),
+              name: data.name,
+              modelId: data.modelType,
+              modelName: data.modelType,
+              datasetIds: [data.datasetGroupId],
+              status: "Running",
+              progress: 0,
+              createdAt: new Date().toISOString(),
+              startedAt: new Date().toISOString(),
+              logs: ["[00:00] Job created"],
+              resultUrl: "",
+              statusMessage: "Initializing training...",
+            };
+
+            addJob(newJob);
           }}
         />
       </section>
@@ -49,28 +95,50 @@ const AITrainingPage = () => {
       <section>
         <h2 className="text-xl font-semibold mb-3">Recent Training Jobs</h2>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {mockTrainingJobs.map((job: TrainingJob) => (
-            <TrainingJobCard
-              key={job.id}
-              job={job}
-              onViewLogs={handleViewLogs}
-              onClick={() => handleCardClick(job.modelId)}
-            />
+          {jobs.map((job: TrainingJob) => (
+            <div key={job.id} className="relative">
+              <TrainingJobCard
+                job={job}
+                onViewLogs={handleViewLogs}
+                onClick={() => handleCardClick(job.modelId)}
+              />
+              <div className="flex justify-between mt-2 gap-2">
+                <button
+                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded"
+                  onClick={() => handleUpdateProgress(job.id)}
+                >
+                  +10% Progress
+                </button>
+                <button
+                  className="px-3 py-1 text-sm bg-green-600 text-white rounded"
+                  onClick={() => handleSaveAgent(job.modelId!)}
+                >
+                  Save Agent
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
       {/* Training Jobs Table */}
-      <section>
+      <section className="mb-10">
         <h2 className="text-xl font-semibold mb-3">Training Jobs Overview</h2>
-        <TrainingJobTable jobs={mockTrainingJobs} onViewLogs={handleViewLogs} />
+        <TrainingJobTable jobs={jobs} onViewLogs={handleViewLogs} />
       </section>
 
       {/* Logs Modal */}
       <TrainingJobLogsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isLogsModalOpen}
+        onClose={() => setIsLogsModalOpen(false)}
         logs={selectedLogs}
+      />
+
+      {/* Save Agent Modal */}
+      <AgentSaveModal
+        open={isAgentModalOpen}
+        onClose={() => setIsAgentModalOpen(false)}
+        modelId={selectedModelId}
       />
     </div>
   );

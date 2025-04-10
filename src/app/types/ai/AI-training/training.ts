@@ -4,18 +4,22 @@ export type TrainingStatus =
   | "Success"
   | "Failed"
   | "Cancelled"
-  | "Completed";
+  | "Completed"
+  | "Pending"
+  | "Training"; // Added for UI-friendly states
 
 export type TrainingJob = {
   id: string;
-  modelId: string;
-  modelName: string;
-  datasetIds: string[];
+  name: string; // Human-readable job name (new)
+  modelId?: string; // Optional for now
+  modelName?: string;
+  datasetIds?: string[];
   status: TrainingStatus;
   progress: number; // 0-100
-  logs: string[];
+  logs?: string[];
+  statusMessage?: string; // Optional for live feedback
   createdAt: string;
   startedAt?: string;
   completedAt?: string;
-  resultUrl?: string; // download result if success
+  resultUrl?: string; // Download result if success
 };
