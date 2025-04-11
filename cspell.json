@@ -1,0 +1,71 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    // General terms
+    "async",
+    "bool",
+    "dirname",
+    "envs",
+    "filepath",
+    "frontend",
+    "middleware",
+    "mockup",
+    "props",
+    "readonly",
+    "resend",
+    "typescript",
+    "uiux",
+
+    // Project-specific (AI/ML)
+    "explainability",
+    "tokenizer",
+    "vectorize",
+    "fscore",
+    "overfitting",
+    "underfitting",
+    "logloss",
+    "rocauc",
+    "xgboost",
+    "tensorflow",
+    "scikit",
+    "keras",
+
+    // Tech stack
+    "tailwindcss",
+    "lucide",
+    "classnames",
+    "zustand",
+    "nextjs",
+    "vite",
+    "eslint",
+
+    // Custom component or file names
+    "ExplainabilityViewer",
+    "mockTabs",
+    "aiutils",
+    "annotate",
+    "ScrollArea",
+    "TabsTrigger",
+    "TabsContent",
+    "TabsList"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "build",
+    "dist",
+    "out",
+    ".next",
+    "coverage",
+    "**/*.lock",
+    "**/*.md",
+    "**/*.svg"
+  ],
+  "ignoreRegExpList": [
+    "/\\\\[.*?\\\\]/g", // Ignore Markdown links
+    "/<[^>]*>/g", // Ignore HTML tags
+    "/https?:\\/\\/\\S+/g", // Ignore URLs
+    "/[0-9a-fA-F]{7,}/g" // Ignore long hashes
+  ],
+  "import": ["cspell-ext-typescript", "cspell-ext-html", "cspell-ext-css"]
+}

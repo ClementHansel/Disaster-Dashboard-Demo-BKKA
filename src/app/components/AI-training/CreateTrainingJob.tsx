@@ -3,17 +3,20 @@
 import React, { useState } from "react";
 import { mockDatasetGroups } from "@/app/data/ai/data-sets/mockDatasets";
 
+export interface TrainingFormData {
+  name: string;
+  datasetGroupId: string;
+  modelType: string;
+  notes?: string;
+  site?: string;
+  agentName?: string;
+  readyForDeployment?: boolean;
+  originType?: "base" | "clone" | "fine-tune";
+}
+
 interface CreateTrainingTaskFormProps {
-  onSubmit: (data: {
-    name: string;
-    datasetGroupId: string;
-    modelType: string;
-    notes?: string;
-    site?: string;
-    agentName?: string;
-    readyForDeployment?: boolean;
-    originType?: "base" | "clone" | "fine-tune";
-  }) => void;
+  onSubmit: (data: TrainingFormData) => void;
+  prefillData?: TrainingFormData;
 }
 
 const modelOptions = [
@@ -32,16 +35,23 @@ const mockSites = [
 
 const CreateTrainingTaskForm: React.FC<CreateTrainingTaskFormProps> = ({
   onSubmit,
+  prefillData,
 }) => {
-  const [name, setName] = useState("");
-  const [selectedDataset, setSelectedDataset] = useState("");
-  const [modelType, setModelType] = useState("default");
-  const [notes, setNotes] = useState("");
-  const [site, setSite] = useState("");
-  const [agentName, setAgentName] = useState("");
-  const [readyForDeployment, setReadyForDeployment] = useState(false);
+  const [name, setName] = useState(prefillData?.name || "");
+  const [selectedDataset, setSelectedDataset] = useState(
+    prefillData?.datasetGroupId || ""
+  );
+  const [modelType, setModelType] = useState(
+    prefillData?.modelType || "default"
+  );
+  const [notes, setNotes] = useState(prefillData?.notes || "");
+  const [site, setSite] = useState(prefillData?.site || "");
+  const [agentName, setAgentName] = useState(prefillData?.agentName || "");
+  const [readyForDeployment, setReadyForDeployment] = useState(
+    prefillData?.readyForDeployment || false
+  );
   const [originType, setOriginType] = useState<"base" | "clone" | "fine-tune">(
-    "fine-tune"
+    prefillData?.originType || "fine-tune"
   );
 
   const isFormValid = name.trim() !== "" && selectedDataset !== "";

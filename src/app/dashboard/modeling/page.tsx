@@ -102,7 +102,7 @@ const ModelingPage = () => {
                 )
               }
               searchTerm={modelSearchTerm}
-              onRowClick={(id) => router.push(`/dashboard/models/${id}`)}
+              onRowClick={(id) => router.push(`/dashboard/modeling/${id}`)}
               onCompare={(model) => {
                 setSelectedModelId(model.id);
                 setShowCompareDrawer(true);

@@ -27,7 +27,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar }) => {
   return (
     <aside
-      className={`h-full bg-gray-900 text-white px-4 pt-20 pb-12 transition-all duration-300 ${
+      className={`h-full bg-gray-900 text-white px-4 pt-4 pb-12 transition-all duration-300 ${
         isExpanded ? "w-64" : "w-20"
       }`}
     >
